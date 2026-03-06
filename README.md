@@ -205,7 +205,30 @@ sudo usermod -aG docker ubuntu && newgrp docker
 #
 - <b id="Sonar">Install and configure SonarQube (Master machine)</b>
 ```bash
-docker run -itd --name SonarQube-Server -p 9000:9000 sonarqube:lts-community
+make new file
+<vim docker-compose.yml>
+paste these commands inside the .yml file
+version: "3"
+services:
+  sonarqube:
+    image: sonarqube:lts-community
+    restart: always
+    ports:
+      - "9000:9000"
+    networks:
+      - sonarnet
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+networks:
+  sonarnet:
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
 ```
 #
 - <b id="Trivy">Install Trivy (Jenkins Worker)</b>
